@@ -1,0 +1,22 @@
+export default {
+  id: 'ID',
+  user_id: '用户ID',
+  user_name: '客户姓名',
+  user_mobile: '客户手机',
+  user_company: '客户公司',
+  user_addr: '客户地区',
+  user_block: '街道地址',
+  product_name: '产品型号',
+  product_avatar: '产品图片',
+  sn: '订单号',
+  cate: '分类',
+  sort: '排序',
+  name: '名称',
+  mobile: '手机',
+  tel: '电话',
+  addr: '地址',
+  desc: '描述',
+  status: '状态',
+  create_time: '创建时间',
+  update_time: '更新时间'
+}
