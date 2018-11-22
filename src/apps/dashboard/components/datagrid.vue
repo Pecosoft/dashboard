@@ -7,21 +7,30 @@
       stripe
       border
       highlight-current-row
+      @select='onSelect'
+      @select-all='onSelectAll'
+      @selection-change='onSelectChange'
     )
       el-table-column(type='selection' v-if='tableData.length' fixed :width='40' align='center' header-align='center')
-      template(v-for='(field, key) in fields')
+      template(v-if='cols && cols.length')
         el-table-column(
-          v-if='fieldFormatter(field) == "time"'
-          :prop='field'
-          :label='fieldLabel(field)'
-          :width='fieldWidth(field)'
-          :formatter='timeFormatter'
+          v-for='(col, key) in cols'
+          :key='col.prop'
+          :prop='col.prop'
+          :label='col.label'
+          :width='col.width'
+          :class-name='col.styleclass'
+          :formatter='col.formatter || null'
+          show-overflow-tooltip
         )
+      template(v-else)
         el-table-column(
-          v-else
+          v-for='(field, key) in fields'
+          :key='field'
           :prop='field'
           :label='fieldLabel(field)'
           :width='fieldWidth(field)'
+          :formatter='fieldFormatter(field) == "time" ? timeFormatter : null'
         )
 
     el-pagination(
@@ -39,6 +48,7 @@ import parseFieldsFromRowData from 'utils/parseFieldsFromRowData'
 import winHeight from 'utils/winHeight'
 import pagerNeed from 'utils/pagerNeed'
 import { on, off } from 'utils/dom'
+import exportExcel from 'utils/exportExcel'
 import timestampToText from 'filters/timestampToText'
 import fieldLabel from '../config/fieldLabel'
 import fieldWidth from '../config/fieldWidth'
@@ -51,16 +61,24 @@ export default {
     },
     deltaHeight: {
       type: Number,
-      default: 127
+      default: 249
+    },
+    cols: {
+      type: Array,
+      default () {
+        return []
+      }
     }
   },
   data () {
     let winH = winHeight()
     return {
-      tableHeight: winH - 127,
+      tableHeight: winH - 249,
       fields: [],
       pageSize: 10,
-      currentPage: 1
+      currentPage: 1,
+      selectAll: false,
+      selection: []
     }
   },
   watch: {
@@ -101,6 +119,24 @@ export default {
     }
   },
   methods: {
+    exportExcel (filePrefix) {
+      let srccols = this.cols
+      let tableData = this.selectAll ? this.sourceData : (this.selection.length ? this.selection : this.tableData)
+      let cols = srccols.map(col => {
+        return { label: col.label, width: col.width / 20, prop: col.prop }
+      })
+      let rows = tableData.map(row => {
+        let rowdata = Object.assign({}, row)
+        for (let i = 0, len = srccols.length; i < len; i++) {
+          let { prop, formatter } = srccols[i]
+          if (prop && typeof formatter === 'function') {
+            rowdata[prop] = formatter(null, null, row[prop])
+          }
+        }
+        return rowdata
+      })
+      exportExcel(filePrefix, rows, cols)
+    },
     fieldLabel (field) {
       return fieldLabel[field] || field
     },
@@ -134,6 +170,19 @@ export default {
       this.$store.dispatch(this.source + '/fetch', needPager).then(_ => {
         this.currentPage = currentPage
       })
+    },
+    onSelect (selection, row) {
+      this.selectAll = false
+    },
+    onSelectAll (selection) {
+      if (selection.length) {
+        this.selectAll = true
+      } else {
+        this.selectAll = false
+      }
+    },
+    onSelectChange (selection) {
+      this.selection = selection
     }
   }
 }
@@ -143,4 +192,7 @@ export default {
 .el-table
   & th
     background: #f5f7fa
+td.redcell
+  & .cell
+    color: #f00
 </style>
