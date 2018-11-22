@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './apps/dashboard/router'
 import store from './apps/dashboard/store'
+import './apps/dashboard/style.styl'
 
 Vue.use(ElementUI)
 

@@ -10,7 +10,8 @@
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
     "dev:dashboard": "cross-env APP=dashboard PORT=8080 npm run dev",
-    "build:dashboard": "cross-env APP=dashboard npm run build"
+    "build:dashboard": "cross-env APP=dashboard npm run build",
+    "release:dashboard": "npm run build:dashboard && ./deploy.sh"
   },
   "dependencies": {
     "axios": "^0.18.0",

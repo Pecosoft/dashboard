@@ -4,8 +4,11 @@
       :data='tableData'
       :height='tableHeight'
       style='width: 100%'
+      stripe
       border
+      highlight-current-row
     )
+      el-table-column(type='selection' v-if='tableData.length' fixed :width='40' align='center' header-align='center')
       template(v-for='(field, key) in fields')
         el-table-column(
           v-if='fieldFormatter(field) == "time"'
