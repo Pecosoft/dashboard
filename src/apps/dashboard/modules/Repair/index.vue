@@ -1,10 +1,9 @@
 <template lang="pug">
 .peco-curd-container
-  peco-datafilter
+  peco-datafilter(ref='datafilter' :cols='filterCols' @on-query='onQuery')
   .peco-toolbar
     el-button(type='primary' icon='el-icon-download' @click='doExport') 导出EXCEL
   peco-datagrid(ref='datagrid' source='repair' :cols='cols')
-</el-breadcrumb>
 </template>
 
 <script>
@@ -20,6 +19,15 @@ export default {
   },
   data () {
     return {
+      filterCols: [
+        {
+          label: '公司',
+          prop: 'company',
+          filter (value, row, column) {
+            console.log('搜索：', value)
+          }
+        }
+      ],
       cols: [
         {
           label: '订单号',
@@ -77,10 +85,16 @@ export default {
     }
   },
   mounted () {
+    let query = this.$refs.datafilter.getQuery()
+    this.$refs.datagrid.reload(query)
   },
   methods: {
     doExport () {
-      this.$refs.datagrid.exportExcel('repair')
+      this.$refs.datagrid.exportExcel('客户报修')
+    },
+    onQuery (query) {
+      console.log('提交查询', query)
+      this.$refs.datagrid.reload(Object.assign({}, { company: 'pecosoft' }, query))
     }
   }
 }

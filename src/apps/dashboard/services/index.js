@@ -6,6 +6,8 @@ import dsclerk from './rests/dsclerk'
 import gpleader from './rests/gpleader'
 import tcworker from './rests/tcworker'
 import manager from './rests/manager'
+import department from './rests/department'
+import employee from './rests/employee'
 import customer from './rests/customer'
 import user from './rests/user'
 
@@ -18,6 +20,8 @@ export default {
   gpleader,
   tcworker,
   manager,
+  department,
+  employee,
   customer,
   user
 }

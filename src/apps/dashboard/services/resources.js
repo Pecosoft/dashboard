@@ -11,6 +11,8 @@ export const dsclerk = prefix + '/dsclerk'
 export const gpleader = prefix + '/gpleader'
 export const tcworker = prefix + '/tcworker'
 export const manager = prefix + '/manager'
+export const department = prefix + '/department'
+export const employee = prefix + '/employee'
 export const customer = prefix + '/customer'
 export const user = prefix + '/user'
 // 授权用户信息

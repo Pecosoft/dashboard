@@ -10,6 +10,7 @@
       @select='onSelect'
       @select-all='onSelectAll'
       @selection-change='onSelectChange'
+      v-loading='loading'
     )
       el-table-column(type='selection' v-if='tableData.length' fixed :width='40' align='center' header-align='center')
       template(v-if='cols && cols.length')
@@ -73,30 +74,20 @@ export default {
   data () {
     let winH = winHeight()
     return {
-      tableHeight: winH - 249,
+      tableHeight: winH - this.deltaHeight,
       fields: [],
+      query: {},
       pageSize: 10,
       currentPage: 1,
       selectAll: false,
-      selection: []
+      selection: [],
+      loading: false
     }
   },
   watch: {
     deltaHeight (newVal) {
       this.tableHeight = winHeight() - newVal
     }
-  },
-  created () {
-    this.$Progress.start()
-    this.$store.dispatch(this.source + '/fetch', { start:0, end: 100 }).then(res => {
-      this.$Progress.finish()
-      if (!this.fields.length) {
-        let { data } = res
-        this.fields = parseFieldsFromRowData(data[0])
-      }
-    }).catch(error => {
-      this.$Progress.fail()
-    })
   },
   mounted () {
     // let that = this
@@ -119,6 +110,25 @@ export default {
     }
   },
   methods: {
+    reload (query) {
+      if (query) {
+        this.query = query
+      }
+      let params = Object.assign({}, this.query)
+      this.$Progress.start()
+      this.loading = true
+      this.$store.dispatch(this.source + '/fetch', { reload: true, args: params }).then(res => {
+        this.$Progress.finish()
+        this.loading = false
+        if (!this.fields.length) {
+          let { data } = res
+          this.fields = parseFieldsFromRowData(data[0])
+        }
+      }).catch(error => {
+        this.$Progress.fail()
+        this.loading = false
+      })
+    },
     exportExcel (filePrefix) {
       let srccols = this.cols
       let tableData = this.selectAll ? this.sourceData : (this.selection.length ? this.selection : this.tableData)
@@ -156,7 +166,10 @@ export default {
         this.pageSize = pageSize
         return
       }
-      this.$store.dispatch(this.source + '/fetch', needPager).then(_ => {
+      let params = Object.assign({}, needPager, this.query)
+      this.loading = true
+      this.$store.dispatch(this.source + '/fetch', {args: params}).then(_ => {
+        this.loading = false
         this.pageSize = pageSize
       })
     },
@@ -167,7 +180,10 @@ export default {
         this.currentPage = currentPage
         return
       }
-      this.$store.dispatch(this.source + '/fetch', needPager).then(_ => {
+      let params = Object.assign({}, needPager, this.query)
+      this.loading = true
+      this.$store.dispatch(this.source + '/fetch', {args: params}).then(_ => {
+        this.loading = false
         this.currentPage = currentPage
       })
     },

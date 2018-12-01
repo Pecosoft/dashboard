@@ -18,7 +18,7 @@
           div(v-for='menu in menus' :key='menu.path')
             el-submenu(:index='menu.path' v-if='menu.children')
               span(slot='title') {{ menu.title }}
-              el-menu-item(v-for='submenu in menu.children' :index='submenu.path' :key='submenu.path') {{ submenu.title }}
+              el-menu-item(v-for='submenu in menu.children' :index='submenu.path') {{ submenu.title }}
             el-menu-item(:index='menu.path' v-else) {{ menu.title }}
       el-main.no-padding
         .peco-breadcrumb

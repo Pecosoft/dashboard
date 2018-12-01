@@ -10,7 +10,7 @@ export default {
   },
   actions: {
     async fetch ({ state }, params) {
-      let res = await services['complain'].fetch({args: params.args})
+      let res = await services['department'].fetch({args: params.args})
       let { data, count } = res
       if (params.reload) {
         data = plainRows(data)

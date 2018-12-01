@@ -2,6 +2,18 @@
 import plainRows from 'utils/plainRows'
 import services from '../../services'
 
+function mergeChildren (list) {
+  let mergeList = []
+  for (let i = 0, len = list.length; i < len; i++) {
+    let cate_name = list[i].name
+    mergeList = mergeList.concat(list[i].children.map(item => {
+      item.cate_name = cate_name
+      return item
+    }))
+  }
+  return mergeList
+}
+
 export default {
   namespaced: true,
   state: {
@@ -10,14 +22,14 @@ export default {
   },
   actions: {
     async fetch ({ state }, params) {
-      let res = await services['complain'].fetch({args: params.args})
+      let res = await services['product'].fetch({args: params.args})
       let { data, count } = res
       if (params.reload) {
-        data = plainRows(data)
+        data = mergeChildren(data)
         state.sourceData = data
         state.total = count
       } else if (data && data.length) {
-        data = plainRows(data)
+        data = mergeChildren(data)
         state.sourceData = state.sourceData.concat(data)
         state.total += count
       }
