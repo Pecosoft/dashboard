@@ -6,6 +6,7 @@ const Complain = () => import(/* webpackChunkName: "Complain" */ '@/apps/dashboa
 const Department = () => import(/* webpackChunkName: "Org" */ '@/apps/dashboard/modules/Org/department')
 const Employee = () => import(/* webpackChunkName: "Org" */ '@/apps/dashboard/modules/Org/employee')
 const Product = () => import(/* webpackChunkName: "Product" */ '@/apps/dashboard/modules/Product')
+const ProductCate = () => import(/* webpackChunkName: "Product" */ '@/apps/dashboard/modules/Product/cate')
 
 export default [
   {
@@ -27,6 +28,14 @@ export default [
     path: '/product/',
     component: Frame,
     children: [
+      {
+        name: 'ProductCate',
+        path: 'cate',
+        component: ProductCate,
+        meta: {
+          title: '产品分类'
+        }
+      },
       {
         name: 'Product',
         path: '',

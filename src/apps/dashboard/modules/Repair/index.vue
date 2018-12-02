@@ -1,14 +1,50 @@
 <template lang="pug">
 .peco-curd-container
-  peco-datafilter(ref='datafilter' :cols='filterCols' @on-query='onQuery')
+  peco-datafilter(ref='datafilter' source='repair' :cols='filterCols' @on-query='onQuery')
   .peco-toolbar
     el-button(type='primary' icon='el-icon-download' @click='doExport') 导出EXCEL
-  peco-datagrid(ref='datagrid' source='repair' :cols='cols')
+  peco-datagrid(ref='datagrid' source='repair' :cols='cols' :delta-height='299')
+    el-table-column(prop='sn' label='订单号' width='200')
+    el-table-column(prop='model' label='报修产品' width='120')
+    el-table-column(prop='description' label='报修描述' width='200')
+    el-table-column(prop='status' label='订单状态' width='100' :formatter='statusFormatter' class-name='redcell')
+    el-table-column(prop='customer_name' label='客户姓名' width='150')
+    el-table-column(prop='customer_contact' label='客户手机' width='120')
+    el-table-column(prop='company_name' label='客户公司' width='200')
+    el-table-column(prop='company_province' label='省' width='100')
+    el-table-column(prop='company_city' label='市' width='100')
+    el-table-column(prop='company_area' label='区' width='100')
+    el-table-column(prop='company_address' label='详细地址' width='160')
+    el-table-column(prop='dsclerk_name' label='派单文员' width='150')
+    el-table-column(prop='dsclerk_mobile' label='派单文员手机' width='150')
+    el-table-column(prop='gpleader_name' label='维修组长' width='150')
+    el-table-column(prop='gpleader_mobile' label='维修组长手机' width='150')
+    el-table-column(prop='tcworker_name' label='维修师傅' width='150')
+    el-table-column(prop='tcworker_mobile' label='维修师傅手机' width='150')
+    el-table-column(prop='jiean_num' label='出机编码' width='150')
+    el-table-column(prop='jiean_date' label='结案日期' width='160')
+    el-table-column(prop='jiean_range' label='保内/保外' width='60')
+    el-table-column(prop='jiean_charged' label='是否收费' width='60')
+    el-table-column(prop='jiean_fittings' label='更换配件' width='60')
+    el-table-column(prop='jiean_content' label='维修内容' width='60')
+    el-table-column(prop='jiean_comment' label='维修备注' width='60')
+    el-table-column(prop='rate_sudu' label='评价速度' width='60')
+    el-table-column(prop='rate_taidu' label='评价态度' width='60')
+    el-table-column(prop='rate_jishu' label='评价技术' width='60')
+    el-table-column(prop='rate_content' label='评价内容' width='160')
+    el-table-column(label='维修日志' width='460')
+      template(slot-scope='scope')
+        p(v-for='event in scope.row.events' :key='event.id')
+          span [{{ event.create_time|timestamp-to-text }}]
+          span(style='margin-left: 5px') {{ event.who }} ({{ event.mobile }})
+          span(style='margin-left: 5px') {{ event.action }}
+          span(style='margin-left: 5px') {{ event.content }}
+    el-table-column(prop='create_time' label='申请报修时间' width='160' :formatter='timeFormatter')
 </template>
 
 <script>
 import PecoDatafilter from '../../components/datafilter'
-import PecoDatagrid from '../../components/datagrid'
+import PecoDatagrid from '../../components/templategrid'
 import timestampToText from 'filters/timestampToText'
 import statusToText from 'filters/statusToText'
 
@@ -17,14 +53,52 @@ export default {
     PecoDatafilter,
     PecoDatagrid
   },
+  filters: {
+    timestampToText
+  },
   data () {
     return {
       filterCols: [
         {
-          label: '公司',
-          prop: 'company',
-          filter (value, row, column) {
-            console.log('搜索：', value)
+          label: '客户姓名',
+          prop: 'customer_name',
+          filter (query) {
+            if (query !== '') {
+              this.$store.dispatch('repair/filterQuery', { field: 'customer_name', query }).then(_ => true)
+            }
+          }
+        },
+        {
+          label: '联系方式',
+          prop: 'customer_contact',
+          filter (query) {
+            if (query !== '') {
+              this.$store.dispatch('repair/filterQuery', { field: 'customer_contact', query }).then(_ => true)
+            }
+          }
+        },
+        {
+          label: '所在公司',
+          prop: 'customer_company',
+          filter (query) {
+            if (query !== '') {
+              this.$store.dispatch('repair/filterQuery', { field: 'customer_company', query }).then(_ => true)
+            }
+          }
+        },
+        {
+          label: '订单状态',
+          prop: 'status',
+          filter (query) {
+          }
+        },
+        {
+          label: '出机编码',
+          prop: 'machine_sn',
+          filter (query) {
+            if (query !== '') {
+              this.$store.dispatch('repair/filterQuery', { field: 'machine_sn', query }).then(_ => true)
+            }
           }
         }
       ],
@@ -32,6 +106,16 @@ export default {
         {
           label: '订单号',
           prop: 'sn',
+          width: 200
+        },
+        {
+          label: '报修产品',
+          prop: 'model',
+          width: 120
+        },
+        {
+          label: '报修描述',
+          prop: 'description',
           width: 200
         },
         {
@@ -44,34 +128,138 @@ export default {
           }
         },
         {
-          label: '报修产品',
-          prop: 'product_name',
-          width: 120
-        },
-        {
           label: '客户姓名',
-          prop: 'user_name',
-          width: 100
+          prop: 'customer_name',
+          width: 150
         },
         {
           label: '客户手机',
-          prop: 'user_mobile',
+          prop: 'customer_contact',
           width: 120
         },
         {
           label: '客户公司',
-          prop: 'user_company',
+          prop: 'company_name',
           width: 200
         },
         {
-          label: '省市区',
-          prop: 'user_addr',
-          width: 160
+          label: '省',
+          prop: 'company_province',
+          width: 100
+        },
+        {
+          label: '市',
+          prop: 'company_city',
+          width: 100
+        },
+        {
+          label: '区',
+          prop: 'company_area',
+          width: 100
         },
         {
           label: '详细地址',
-          prop: 'user_block',
+          prop: 'company_address',
           width: 160
+        },
+        {
+          label: '派单文员',
+          prop: 'dsclerk_name',
+          width: 150
+        },
+        {
+          label: '派单文员手机',
+          prop: 'dsclerk_mobile',
+          width: 150
+        },
+        {
+          label: '维修组长',
+          prop: 'gpleader_name',
+          width: 150
+        },
+        {
+          label: '维修组长手机',
+          prop: 'gpleader_mobile',
+          width: 150
+        },
+        {
+          label: '维修师傅',
+          prop: 'tcworker_name',
+          width: 150
+        },
+        {
+          label: '维修师傅手机',
+          prop: 'tcworker_mobile',
+          width: 150
+        },
+        {
+          label: '出机编码',
+          prop: 'jiean_num',
+          width: 160
+        },
+        {
+          label: '结案日期',
+          prop: 'jiean_date',
+          width: 160
+        },
+        {
+          label: '保内/保外',
+          prop: 'jiean_range',
+          width: 60
+        },
+        {
+          label: '是否收费',
+          prop: 'jiean_charged',
+          width: 60
+        },
+        {
+          label: '更换配件',
+          prop: 'jiean_fittings',
+          width: 160
+        },
+        {
+          label: '维修内容',
+          prop: 'jiean_content',
+          width: 160
+        },
+        {
+          label: '维修备注',
+          prop: 'jiean_comment',
+          width: 160
+        },
+        {
+          label: '评价速度',
+          prop: 'rate_sudu',
+          width: 60
+        },
+        {
+          label: '评价态度',
+          prop: 'rate_taidu',
+          width: 60
+        },
+        {
+          label: '评价技术',
+          prop: 'rate_jishu',
+          width: 60
+        },
+        {
+          label: '评价内容',
+          prop: 'rate_content',
+          width: 160
+        },
+        {
+          label: '维修日志',
+          prop: 'events',
+          width: 160,
+          formatter (row, column, cellValue, index) {
+            let events = cellValue
+            return events.map(evt => {
+              return '[' + timestampToText(evt.create_time) + ']'
+                      + evt.who + '(' + evt.mobile + ')'
+                      + evt.action + ' '
+                      + evt.content
+            }).join('\n');
+          }
         },
         {
           label: '申请报修时间',
@@ -94,7 +282,13 @@ export default {
     },
     onQuery (query) {
       console.log('提交查询', query)
-      this.$refs.datagrid.reload(Object.assign({}, { company: 'pecosoft' }, query))
+      this.$refs.datagrid.reload(Object.assign({}, query))
+    },
+    statusFormatter (row, column, cellValue, index) {
+      return statusToText(cellValue)
+    },
+    timeFormatter (row, column, cellValue, index) {
+      return timestampToText(cellValue)
     }
   }
 }

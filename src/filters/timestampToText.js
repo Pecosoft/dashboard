@@ -1,5 +1,8 @@
 export default function (timestamp) {
   timestamp = parseInt(timestamp)
+  if (isNaN(timestamp)) {
+    return '-'
+  }
   if (String(timestamp).length <= 11) timestamp *= 1000
 
   let dt = new Date(timestamp)

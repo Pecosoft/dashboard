@@ -1,4 +1,5 @@
 import product from './rests/product'
+import productcate from './rests/productcate'
 import repair from './rests/repair'
 import complain from './rests/complain'
 import suggest from './rests/suggest'
@@ -13,6 +14,7 @@ import user from './rests/user'
 
 export default {
   product,
+  productcate,
   repair,
   complain,
   suggest,

@@ -4,6 +4,7 @@ const remoteHost = '//api.taikan.pecosoft.cn'
 const prefix = isDev ? '' : remoteHost
 
 export const product = prefix + '/product'
+export const productcate = prefix + '/productcate'
 export const repair = prefix + '/repair'
 export const complain = prefix + '/complain'
 export const suggest = prefix + '/suggest'
@@ -21,3 +22,10 @@ export const authUser = prefix + '/auth_user'
 export const authLogin = '//login.taikan.pecosoft.cn/?app='
 // 省市区数据
 export const provinceCityArea = prefix + '/areas'
+// 上传图片接口
+export const uploadImage = prefix + '/uploadimage'
+// 获取字段可取值
+export const fieldCustomerName = prefix + '/field/customername'
+export const fieldCustomerContact = prefix + '/field/customercontact'
+export const fieldCustomerCompany = prefix + '/field/customercompany'
+export const fieldMachineSn = prefix + '/field/machinesn'
