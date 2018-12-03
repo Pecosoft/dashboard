@@ -260,13 +260,6 @@ export default {
         })
       })
     },
-    resetForm() {
-      this.$refs['form'].resetFields()
-    },
-    onCancel () {
-      this.resetForm()
-      this.formDialogShow = false
-    },
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {

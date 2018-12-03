@@ -20,13 +20,6 @@ export default {
   data () {
     return {
       filterCols: [
-        {
-          label: '公司',
-          prop: 'company',
-          filter (value, row, column) {
-            console.log('搜索：', value)
-          }
-        }
       ],
       cols: [
         {

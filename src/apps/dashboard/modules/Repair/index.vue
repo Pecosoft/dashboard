@@ -60,6 +60,12 @@ export default {
     return {
       filterCols: [
         {
+          label: '订单状态',
+          prop: 'status',
+          filter (query) {
+          }
+        },
+        {
           label: '客户姓名',
           prop: 'customer_name',
           filter (query) {
@@ -84,12 +90,6 @@ export default {
             if (query !== '') {
               this.$store.dispatch('repair/filterQuery', { field: 'customer_company', query }).then(_ => true)
             }
-          }
-        },
-        {
-          label: '订单状态',
-          prop: 'status',
-          filter (query) {
           }
         },
         {
@@ -281,8 +281,38 @@ export default {
       this.$refs.datagrid.exportExcel('客户报修')
     },
     onQuery (query) {
-      console.log('提交查询', query)
-      this.$refs.datagrid.reload(Object.assign({}, query))
+      let { startDate, endDate } = query
+      let params = { startDate, endDate }
+      let user_ids = []
+      let company_id, repair_id
+      if (query.customer_name) {
+        user_ids.push(query.customer_name)
+      }
+      if (query.customer_contact) {
+        let id = query.customer_contact
+        if (user_ids.indexOf(id) === -1) {
+          user_ids.push(id)
+        }
+      }
+      if (query.customer_company) {
+        company_id = query.customer_company
+      }
+      if (query.machine_sn) {
+        repair_id = query.machine_sn
+      }
+      if (user_ids.length) {
+        params.s = user_ids.join(',')
+      }
+      if (company_id) {
+        params.c = company_id
+      }
+      if (repair_id) {
+        params.r = repair_id
+      }
+      if (query.status !== '') {
+        params.status = query.status
+      }
+      this.$refs.datagrid.reload(params)
     },
     statusFormatter (row, column, cellValue, index) {
       return statusToText(cellValue)

@@ -23,12 +23,32 @@ export default {
       machine_sn: [],
       status: [
         {
-          label: '受理中',
+          label: '未受理',
+          value: 0
+        },
+        {
+          label: '已受理',
           value: 1
         },
         {
-          label: '结案完',
+          label: '已派单',
           value: 2
+        },
+        {
+          label: '已接单',
+          value: 3
+        },
+        {
+          label: '维修中',
+          value: 4
+        },
+        {
+          label: '已完成',
+          value: 5
+        },
+        {
+          label: '已评价',
+          value: 6
         }
       ]
     }
@@ -57,7 +77,6 @@ export default {
       let { data, count } = res
 
       state.filterOpts[field] = data || []
-      console.log(state.filterOpts)
       return res.data
     }
   }

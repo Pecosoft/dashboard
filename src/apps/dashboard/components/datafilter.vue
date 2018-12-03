@@ -11,7 +11,7 @@
             el-button(type='warning' @click='onReset') 重置
             el-button(type='primary' @click='onSubmit') 查询
           el-form-item(v-else :label='col.label')
-            el-select(v-model='filterForm[col.prop]' :placeholder='"请选择" + col.label' filterable remote :loading='loading' :remote-method='col.filter')
+            el-select(v-model='filterForm[col.prop]' :placeholder='"请选择" + col.label' clearable filterable remote :loading='loading' :remote-method='col.filter')
               template(v-if='filterOpts[col.prop]')
                 el-option(v-for='item in filterOpts[col.prop]'
                   :key='item.value'
