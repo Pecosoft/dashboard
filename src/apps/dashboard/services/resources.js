@@ -29,3 +29,5 @@ export const fieldCustomerName = prefix + '/field/customername'
 export const fieldCustomerContact = prefix + '/field/customercontact'
 export const fieldCustomerCompany = prefix + '/field/customercompany'
 export const fieldMachineSn = prefix + '/field/machinesn'
+// 系统设置
+export const configTaskRate = prefix + '/system/ratemax'

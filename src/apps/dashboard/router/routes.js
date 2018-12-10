@@ -7,6 +7,7 @@ const Department = () => import(/* webpackChunkName: "Org" */ '@/apps/dashboard/
 const Employee = () => import(/* webpackChunkName: "Org" */ '@/apps/dashboard/modules/Org/employee')
 const Product = () => import(/* webpackChunkName: "Product" */ '@/apps/dashboard/modules/Product')
 const ProductCate = () => import(/* webpackChunkName: "Product" */ '@/apps/dashboard/modules/Product/cate')
+const Rate = () => import(/* webpackChunkName: "System" */ '@/apps/dashboard/modules/System/rate')
 
 export default [
   {
@@ -110,6 +111,21 @@ export default [
         component: Suggest,
         meta: {
           title: '客户建议'
+        }
+      }
+    ]
+  },
+  {
+    title: '系统设置',
+    path: '/system/',
+    component: Frame,
+    children: [
+      {
+        name: 'rate',
+        path: 'rate',
+        component: Rate,
+        meta: {
+          title: '客户评论提醒'
         }
       }
     ]

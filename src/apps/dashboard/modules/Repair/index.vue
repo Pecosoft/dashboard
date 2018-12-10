@@ -253,6 +253,7 @@ export default {
           width: 160,
           formatter (row, column, cellValue, index) {
             let events = cellValue
+            if (!events || !events.length) return ''
             return events.map(evt => {
               return '[' + timestampToText(evt.create_time) + ']'
                       + evt.who + '(' + evt.mobile + ')'
